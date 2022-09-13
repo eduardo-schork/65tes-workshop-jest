@@ -1,7 +1,7 @@
 import validatePlateSum from "../../usecase/validate-plate-sum.usecase";
 import arrangeTestContext from "./arrange-test-context";
 
-describe("validatePlateSum", () => {
+describe("validatePlateSumUsecase", () => {
   const { wrongPlateVehicle, correctPlateVehicle } = arrangeTestContext();
 
   describe("GIVEN a vehicle with correct plate ", () => {

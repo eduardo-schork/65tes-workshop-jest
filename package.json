@@ -4,7 +4,7 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "test": "jest --no-cache"
+    "test": "jest --no-cache --verbose"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
