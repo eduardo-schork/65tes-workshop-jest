@@ -1,17 +1,20 @@
-import Vehicle from "../../models/vehicle";
-import VehicleChassisInvalid from "../../repositories/vehicle/exceptions/vehicle-chassis-invalid.error";
 import arrangeTestContext from "./arrange-test-context";
 
-describe("VehicleRepository", () => {
-  describe(".create", () => {
-    const { wrongChassisVehicle, correctDataVehicle, vehicleRepository } =
-      arrangeTestContext();
+import VehicleChassisInvalid from "../../repositories/vehicle/exceptions/vehicle-chassis-invalid.error";
+import VehicleNotFound from "../../repositories/vehicle/exceptions/vehicle-not-found.error";
 
+describe("VehicleRepository", () => {
+  const {
+    existentVehicle,
+    vehicleRepository,
+    wrongChassisVehicle,
+    expectedVehicleData,
+  } = arrangeTestContext();
+
+  describe(".create", () => {
     describe("GIVEN a vehicle with correct data ", () => {
-      it("SHOULD create and return a vehicle", async () => {
-        expect(
-          typeof (await vehicleRepository.create(correctDataVehicle))
-        ).toBe(Vehicle);
+      it("SHOULD create a vehicle and return true", async () => {
+        expect(await vehicleRepository.create(expectedVehicleData)).toBe(true);
       });
     });
 
@@ -19,7 +22,36 @@ describe("VehicleRepository", () => {
       it("SHOULD NOT pass through creation and throw VehicleChassisInvalid error", () => {
         expect(async () => {
           await vehicleRepository.create(wrongChassisVehicle);
-        }).toThrow(VehicleChassisInvalid);
+        }).rejects.toThrow(VehicleChassisInvalid);
+      });
+    });
+  });
+
+  describe(".findById", () => {
+    describe("GIVEN a valid vehicle id", () => {
+      it("SHOULD find the vehicle and return it", () => {
+        expect(vehicleRepository.findById("1")).not.toBe(null);
+      });
+    });
+    describe("GIVEN a invalid vehicle id", () => {
+      it("SHOULD NOT find the vehicle and return null", () => {
+        expect(vehicleRepository.findById("1123")).toBeNull();
+      });
+    });
+  });
+  describe(".update", () => {
+    describe("GIVEN an existent vehicle", () => {
+      it("SHOULD update the vehicle and return it", () => {
+        expect(vehicleRepository.update(existentVehicle)?.id).toBe(
+          existentVehicle.id
+        );
+      });
+    });
+    describe("GIVEN an unexistent vehicle", () => {
+      it("SHOULD not update the vehicle and return VehicleNotFound() error", () => {
+        expect(() => vehicleRepository.update(wrongChassisVehicle)).toThrow(
+          VehicleNotFound
+        );
       });
     });
   });
